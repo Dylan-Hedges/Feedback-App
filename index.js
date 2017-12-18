@@ -9,5 +9,7 @@ app.get('/', (req, res) => {
 	res.send({ hi: 'there' });
 });
 
-//Tells Express to tell Node to listen to traffic on port 5000
-app.listen(5000);
+//"const PORT = process.env.PORT" - Allows Heroku (AWS etc.) to dynamically define which port number Node listens to when we deploy our app, looks in the underlying runtime below node and finds the correct port to listen on, "|| 5000" - Development port, if we are on our local machine we hard code the port we want node to listen
+const PORT = process.env.PORT || 5000;
+//Tells Express to tell Node to listen to traffic on the number assigned in the PORT variable
+app.listen(PORT);

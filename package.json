@@ -1,22 +1,27 @@
 {
-  "name": "nodewithreactfullstack",
-  "version": "1.0.0",
-  "description": "Code from Stephen Grider's course Node with React Fullstack Web Development.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Dylan-Hedges/NodeWithReactFullstack.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Dylan-Hedges/NodeWithReactFullstack/issues"
-  },
-  "homepage": "https://github.com/Dylan-Hedges/NodeWithReactFullstack#readme",
-  "dependencies": {
-    "express": "^4.16.2"
-  }
+	"name": "nodewithreactfullstack",
+	"version": "1.0.0",
+	"description":
+		"Code from Stephen Grider's course Node with React Fullstack Web Development.",
+	"main": "index.js",
+	"engines": {
+		"node": "8.1.1",
+		"npm": "5.0.3"
+	},
+	"scripts": {
+		"start": "node index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Dylan-Hedges/NodeWithReactFullstack.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/Dylan-Hedges/NodeWithReactFullstack/issues"
+	},
+	"homepage": "https://github.com/Dylan-Hedges/NodeWithReactFullstack#readme",
+	"dependencies": {
+		"express": "^4.16.2"
+	}
 }
