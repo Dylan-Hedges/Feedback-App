@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const keys = require('./config/keys');
 //We dont assign the require statement to a variable because nothing is returned, we just want the code inside to be executed
 require('./services/passport');
+//Responsible for creating collections in MongoDB
+require('./models/User');
 
 mongoose.connect(keys.mongoURI);
 //Creates a new express app (object) - defines config that listens to incoming requests from Node and send them to different route handlers
