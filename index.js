@@ -1,8 +1,11 @@
 //On the back end we use a module system called common JS modules (a system in node js that allows code to be shared between files), on the front end (React) we use "import" a different module system called ES2015 modules (node JS does not have support for this hence the different syntax)
 const express = require('express');
+const mongoose = require('mongoose');
+const keys = require('./config/keys');
 //We dont assign the require statement to a variable because nothing is returned, we just want the code inside to be executed
 require('./services/passport');
 
+mongoose.connect(keys.mongoURI);
 //Creates a new express app (object) - defines config that listens to incoming requests from Node and send them to different route handlers
 const app = express();
 
