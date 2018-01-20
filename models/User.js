@@ -7,5 +7,5 @@ const userSchema = new Schema({
 	googleId: String
 });
 
-//Creates the Model class - tells Mongoose to create a new collection called 'users', each record will have the properties defined in the Schema
+//Creates the Model class - pushes the schema (userSchema) into Mongoose and creates a new collection (called users), each record will have the properties defined in the Schema
 mongoose.model('users', userSchema);

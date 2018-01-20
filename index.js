@@ -2,10 +2,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const keys = require('./config/keys');
-//We dont assign the require statement to a variable because nothing is returned, we just want the code inside to be executed
-require('./services/passport');
-//Responsible for creating collections in MongoDB
+//Creates model/schema for users - (i.e when a user first signs up to our app a record of their googleId is created) - must come before "require('./services/passport');" as we define the schema/model first then call it in passport.js
 require('./models/User');
+//Uses model to capture and save data to our Mongo DB (i.e capture and save the user id provide by google to our Mongo DB) - We dont assign the require statement to a variable because nothing is returned, we just want the code inside to be executed
+require('./services/passport');
 
 mongoose.connect(keys.mongoURI);
 //Creates a new express app (object) - defines config that listens to incoming requests from Node and send them to different route handlers
