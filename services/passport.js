@@ -28,7 +28,9 @@ passport.use(
 			clientID: keys.googleClientID,
 			clientSecret: keys.googleClientSecret,
 			//Redirects user after granting permission - In the Google developer console, set "Authorized redirect URIs" to "http://localhost:5000/auth/google/callback"
-			callbackURL: '/auth/google/callback'
+			callbackURL: '/auth/google/callback',
+			//Tells GoogleStrategy to trust routing through proxies (in this case Herokus proxy) otherwise there will be a Google "redirect_uri_mismatch" error
+			proxy: true
 		},
 		//Callback function called automatically when redirected back from Google - Takes information about user e.g profile information, access token, refresh token etc.
 		(accessToken, refreshToken, profile, done) => {
