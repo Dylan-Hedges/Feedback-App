@@ -13,4 +13,9 @@ module.exports = app => {
 
 	//Exchanges code provided by google for profile information (uses passport + the 'google' strategy to automatically exchange code for profile information)
 	app.get('/auth/google/callback', passport.authenticate('google'));
+
+	// req = incoming request, res = outgoing response
+	app.get('/api/current_user', (req, res) => {
+		res.send(req.user);
+	});
 };

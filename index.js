@@ -1,6 +1,9 @@
 //On the back end we use a module system called common JS modules (a system in node js that allows code to be shared between files), on the front end (React) we use "import" a different module system called ES2015 modules (node JS does not have support for this hence the different syntax)
 const express = require('express');
 const mongoose = require('mongoose');
+//Gives us access to Cookies
+const cookieSession = require('cookie-session');
+const passport = require('passport');
 const keys = require('./config/keys');
 //Creates model/schema for users - (i.e when a user first signs up to our app a record of their googleId is created) - must come before "require('./services/passport');" as we define the schema/model first then call it in passport.js
 require('./models/User');
@@ -10,6 +13,20 @@ require('./services/passport');
 mongoose.connect(keys.mongoURI);
 //Creates a new express app (object) - defines config that listens to incoming requests from Node and send them to different route handlers
 const app = express();
+
+//Tells Express to use cookies in our app
+app.use(
+	cookieSession({
+		//Sets cookie expiration
+		maxAge: 30 * 24 * 60 * 60 * 1000,
+		//Encrypts cookie - Prevents user id being changed, people cant pretend to be users
+		keys: [keys.cookieKey]
+	})
+);
+
+//Tells passport to use cookies for authentication
+app.use(passport.initialize());
+app.use(passport.session());
 
 //When we import authRoutes it returns a function (as defined in authRoutes), "(app)" - we then immediately call this function and pass in the "app" object
 require('./routes/authRoutes')(app);
