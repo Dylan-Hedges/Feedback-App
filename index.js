@@ -14,7 +14,7 @@ mongoose.connect(keys.mongoURI);
 //Creates a new express app (object) - defines config that listens to incoming requests from Node and send them to different route handlers
 const app = express();
 
-//Tells Express to use cookies in our app
+//Tells Express to use cookies in our app (Cookie middleware)
 app.use(
 	cookieSession({
 		//Sets cookie expiration
@@ -24,7 +24,7 @@ app.use(
 	})
 );
 
-//Tells passport to use cookies for authentication
+//Tells passport to use cookies for authentication (Passport middleware)
 app.use(passport.initialize());
 app.use(passport.session());
 
