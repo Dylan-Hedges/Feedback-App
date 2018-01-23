@@ -33,19 +33,16 @@ passport.use(
 			proxy: true
 		},
 		//Callback function called automatically when redirected back from Google - Takes information about user e.g profile information, access token, refresh token etc.
-		(accessToken, refreshToken, profile, done) => {
-			//This query returns a promise (a tool we use with JS for handeling asynchronous code), ".then(exisitingUser => {})" If match is found "existingUser" = will be a monoogse/model instance/record with the google id, if a match is not found then "existingUser" = NULL
-			User.findOne({ googleId: profile.id }).then(existingUser => {
-				if (existingUser) {
-					//User has logged in before (id exists in DB), "done" = callback function that tells passport we are done and to continue with authentication, "null" = tells passport there was no error, "exisitingUser" here is the exisiting user we found
-					done(null, existingUser);
-				} else {
-					//User hasn't logged in before (id not in DB) - Creates a new mongoose model instance (a single record inside of our collection, i.e a new user) with the google id (profile.id), ".save()" saves the new user to the MongoDB, ".then(user => done(null, user)" retrives the new user saved in the DB (this is a new mongoose model instance from the promise callback, its not "User", best practice to use this instance as other people may have made changes to the db, execute done (see above) this "user" is what gets passed up to "passport.serializeUser()"
-					new User({ googleId: profile.id })
-						.save()
-						.then(user => done(null, user));
-				}
-			});
+		async (accessToken, refreshToken, profile, done) => {
+			//Check if user profile id exists in DB (if found save to exisitingUser, otherwise exisitingUser = NULL)
+			const existingUser = await User.findOne({ googleId: profile.id });
+			if (existingUser) {
+				//User with this profile id exists in DB (we dont need an "else" as we use a "return" which takes us out of the function if a user is found)
+				return done(null, existingUser);
+			}
+			//User with this profile id does not exist in DB, make a new user
+			const user = await new User({ googleId: profile.id }).save();
+			done(null, user);
 		}
 	)
 );
