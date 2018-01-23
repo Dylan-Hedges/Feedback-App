@@ -4,9 +4,10 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 
 import App from './components/App';
+import reducers from './reducers';
 
-//Creates Redux store - takes reducers, the inital state of app, middleware
-const store = createStore(() => [], {}, applyMiddleware());
+//Creates Redux store - takes reducers, the inital state of app, middleware (our app has 2 reducers, an authReducer (checks if user is logged in) and a surveysReducer)
+const store = createStore(reducers, {}, applyMiddleware());
 
 //Renders root component in DOM - Takes root component (< /> are jsx tags - these tags create an instance of the component which ReactDOM expects), and where we want to render it to inside of our DOM (we refrence id="root" inside of our public->index.html file as this is where everything is rendered to)
 ReactDOM.render(
