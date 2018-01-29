@@ -14,7 +14,7 @@ module.exports = app => {
 	//Exchanges code provided by google for profile information (uses passport + the 'google' strategy to automatically exchange code for profile information)
 	app.get('/auth/google/callback', passport.authenticate('google'));
 
-	app.get('/api_logout', (req, res) => {
+	app.get('/api/logout', (req, res) => {
 		//Logs user out - kills the id inside of cookie (destroys req.user), .logout() is attached to the request automatically by passport
 		req.logout();
 		res.send(req.user);
