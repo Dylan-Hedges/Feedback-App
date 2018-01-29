@@ -1,8 +1,8 @@
 import React from 'react';
 //BrowserRouter - manages what components are on screen, Route - sets up rules between components and routes - Helpers that allow you to navigate around the DOM (similar libraries available for react-native and the core react router library)
 import { BrowserRouter, Route } from 'react-router-dom';
+import Header from './Header';
 
-const Header = () => <h2>Header</h2>;
 const Dashboard = () => <h2>Dashboard</h2>;
 const SurveyNew = () => <h2>SurveyNew</h2>;
 const Landing = () => <h2>Landing</h2>;

@@ -1,3 +1,5 @@
+//Imports our CSS styling file - We write the whole path as we only want the css file and not the whole npm module, When importing non JS files we have to add the exension ".css" (.js files we dont need to specify), we dont need the variable name "materializeCSS" or "from" because we are not saving anything in a variable
+import 'materialize-css/dist/css/materialize.min.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
