@@ -12,12 +12,21 @@ module.exports = app => {
 	);
 
 	//Exchanges code provided by google for profile information (uses passport + the 'google' strategy to automatically exchange code for profile information)
-	app.get('/auth/google/callback', passport.authenticate('google'));
+	app.get(
+		'/auth/google/callback',
+		//Acts as middleware that authenicates user then passes the request onto the next part
+		passport.authenticate('google'),
+		//Redirects user after loggin in with google (after OAuth flow is complete)
+		(req, res) => {
+			res.redirect('/surveys');
+		}
+	);
 
 	app.get('/api/logout', (req, res) => {
 		//Logs user out - kills the id inside of cookie (destroys req.user), .logout() is attached to the request automatically by passport
 		req.logout();
-		res.send(req.user);
+		//Redirects user back to root route - after loggin out
+		res.redirect('/');
 	});
 
 	// req = incoming request, res = outgoing response

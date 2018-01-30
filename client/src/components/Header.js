@@ -17,11 +17,11 @@ class Header extends Component {
 						<a href="/auth/google">Login With Google</a>
 					</li>
 				);
-			//All other cases - user must be logged in
+			//All other cases - user must be logged in - <a href="/api/logout"> redirect the user to the logout route on our backend Express API (this route then redirects them back to the default page)
 			default:
 				return (
 					<li>
-						<a>Logout</a>
+						<a href="/api/logout">Logout</a>
 					</li>
 				);
 		}
