@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 //A type of react router that works inside of the browser
 import { Link } from 'react-router-dom';
+import Payments from './Payments';
 
 //Remember when dealing with React components we ned to change "class" to "className"
 class Header extends Component {
@@ -22,12 +23,15 @@ class Header extends Component {
 				);
 			//User is logged in (all other possibilites) - <a href="/api/logout"> redirect the user to the logout route on our backend Express API (this route then redirects them back to the default page)
 			default:
-				return (
+				return [
+					<li key="1">
+						<Payments />
+					</li>,
 					//Displays logout button that links to our back end Express API
-					<li>
+					<li key="2">
 						<a href="/api/logout">Logout</a>
 					</li>
-				);
+				];
 		}
 	}
 	//Link to={} - Navigate to the react route inside of the {}, this.props.user ? '/surveys' : '/' - if a user exists (is logged in/true) go to the surveys page, if a user does not exist (logged out/false) go to the root page
