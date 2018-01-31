@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 //Gives us access to Cookies
 const cookieSession = require('cookie-session');
 const passport = require('passport');
+const bodyParser = require('body-parser');
+
 const keys = require('./config/keys');
 //Creates model/schema for users - (i.e when a user first signs up to our app a record of their googleId is created) - must come before "require('./services/passport');" as we define the schema/model first then call it in passport.js
 require('./models/User');
@@ -14,6 +16,9 @@ mongoose.connect(keys.mongoURI);
 //Creates a new express app (object) - defines config that listens to incoming requests from Node and send them to different route handlers
 const app = express();
 
+//----Middleware---- - applied before request is sent to request handlers
+//Parses incoming requests - parses the body of requests and assigns it to the req.body property, our handlers will be able to use this parsed object (e.g post/put/patch requests that come into our app)
+app.use(bodyParser.json());
 //Tells Express to use cookies in our app (Cookie middleware)
 app.use(
 	cookieSession({
@@ -23,7 +28,6 @@ app.use(
 		keys: [keys.cookieKey]
 	})
 );
-
 //Tells passport to use cookies for authentication (Passport middleware)
 app.use(passport.initialize());
 app.use(passport.session());
