@@ -28,8 +28,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-//When we import authRoutes it returns a function (as defined in authRoutes), "(app)" - we then immediately call this function and pass in the "app" object
+//Import authentication route function into our app - When we import authRoutes it returns a function (as defined in authRoutes), "(app)" - we then immediately call this function and pass in the "app" object
 require('./routes/authRoutes')(app);
+//Import billing route function into our app - Imports in the function from billingRoutes.js and immediately exports it to our express "(app)" object
+require('./routes/billingRoutes')(app);
 
 //"const PORT = process.env.PORT" - Allows Heroku (AWS etc.) to dynamically define which port number Node listens to when we deploy our app, looks in the underlying runtime below node and finds the correct port to listen on, "|| 5000" - Development port, if we are on our local machine we hard code the port we want node to listen
 const PORT = process.env.PORT || 5000;
