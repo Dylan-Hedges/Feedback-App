@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 //Middleware that checks the user is logged in - we dont want users that are not logged in to be able to make surveys
 const requireLogin = require('../middlewares/requireLogin');
 const requireCredits = require('../middlewares/requireCredits');
+const Mailer = require('../services/Mailer');
+//Imports the template that produces the html body
+const surveyTemplate = require('../services/emailTemplates/surveyTemplate.js');
 //Imports the mongoose model class surveys - we can use this to create a new instance of a survey (not yet persisted in our MongoDB)
 const Survey = mongoose.model('surveys');
 
@@ -18,5 +21,8 @@ module.exports = app => {
 			_user: req.user.id,
 			dateSent: Date.now()
 		});
+
+		//Creates a new mail - "(survey)" passes in an object that contains the "subject" and "recipients" propertis, "surveyTemplate(survey)" content of the email (html) - calls the function inside of surveyTemplate.js and passes in the "survey" object/model (defined above), "new" - creates a new instance of a class,
+		const mailer = new Mailer(survey, surveyTemplate(survey));
 	});
 };
