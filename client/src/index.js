@@ -8,6 +8,10 @@ import reduxThunk from 'redux-thunk';
 import App from './components/App';
 import reducers from './reducers';
 
+//Dev testing (SendGrid email testing)
+import axios from 'axios';
+window.axios = axios;
+
 //Creates Redux store - takes reducers, the inital state of app, middleware (our app has 2 reducers, an authReducer (checks if user is logged in) and a surveysReducer)
 const store = createStore(reducers, {}, applyMiddleware(reduxThunk));
 
