@@ -17,3 +17,8 @@ export const handleToken = token => async dispatch => {
 	//Return amount of credits user has - We reuse/dispatch the same action type as for fetch user because all we need back is the amount of credits the user has (which is already returned in fetch user)
 	dispatch({ type: FETCH_USER, payload: res.data });
 };
+
+export const submitSurvey = values => {
+	return { type: 'submit survey ' };
+};
+

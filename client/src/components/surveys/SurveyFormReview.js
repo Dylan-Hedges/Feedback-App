@@ -5,9 +5,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 //Imports the different fields (e.g name, title, body, emails) into our form - we seperated this out because we also want to access this on our form review page
 import formFields from './formFields';
+import * as actions from '../../actions';
 
-//Returns survey field values on screen - "({ onCancel })" - takes the prop from "SurveyForm.js", "onClick={onCancel}" - executes the function onCancel when the user clicks the button, "SurveyFormReview" - this name only needs to line up with the "export default" statement at the bottom, doesnt affect the rest of our app, "{ , formValues}" - pulls in the output of the "mapStateToProps" function which returns values from the Redux store to be displayed on screen for review
-const SurveyFormReview = ({ onCancel, formValues }) => {
+//Returns survey field values on screen - "({ onCancel })" - takes the prop from "SurveyForm.js", "onClick={onCancel}" - executes the function onCancel when the user clicks the button, "SurveyFormReview" - this name only needs to line up with the "export default" statement at the bottom, doesnt affect the rest of our app, "{ , formValues}" - pulls in the output of the "mapStateToProps" function which returns values from the Redux store to be displayed on screen for review, ", submitSurvey }" - our form recieves the action creator as a prop (passed in from connect)
+const SurveyFormReview = ({ onCancel, formValues, submitSurvey }) => {
 	//Iterate over the fields and for each field execute a function that returns html, this is then placed into a new array called "reviewFields", "({name, label})" - we are only extracting the name and label properties
 	const reviewFields = _.map(formFields, ({ name, label }) => {
 		//Returns html for each of our survey fields - "{formvalues[field.name]}" remember "formValues" is the new array and we want to access only the name for EACH entry, "<div key={name}>" when we produce a list of elements React wants us to have a unique key, hence why we are using the individual "name" as a key
@@ -19,12 +20,23 @@ const SurveyFormReview = ({ onCancel, formValues }) => {
 		);
 	});
 
+	//"onClick={submitSurvey(formValues))}" - submits the survey with the form values (under the prop "formValues") when the user clicks (executes our action creator in "index.js")
 	return (
 		<div>
 			<h5>Please confirm your entries</h5>
 			{reviewFields}
-			<button className="yellow darken-3 btn-flat" onClick={onCancel}>
+			<button
+				className="yellow darken-3 white-text btn-flat"
+				onClick={onCancel}
+			>
 				Back
+			</button>
+			<button
+				onClick={() => submitSurvey(formValues)}
+				className="green btn-flat right white-text"
+			>
+				Send Survey
+				<i className="material-icons right">email</i>
 			</button>
 		</div>
 	);
@@ -35,5 +47,5 @@ function mapStateToProps(state) {
 	return { formValues: state.form.surveyForm.values };
 }
 
-//Wire up connect helper to our component
-export default connect(mapStateToProps)(SurveyFormReview);
+//Wire up connect helper to our component - "mapStateToProps" passes in the result of this function, ", actions" passes in our action creators imported from above
+export default connect(mapStateToProps, actions)(SurveyFormReview);

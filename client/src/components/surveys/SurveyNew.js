@@ -1,5 +1,6 @@
 //SurveyNEw shows SurveyForm and SurveyFormReview
 import React, { Component } from 'react';
+import { reduxForm } from 'redux-form';
 import SurveyForm from './SurveyForm';
 import SurveyFormReview from './SurveyFormReview';
 
@@ -30,4 +31,7 @@ class SurveyNew extends Component {
 	}
 }
 
-export default SurveyNew;
+//We wire up our Redux Form helper and use the default settings which destorys what the user has typed when navigating away (i.e user clicks cancel) unlike in SurveyForm.js where we keep what the user has typed when moving between the Survey Form <-> Review Form
+export default reduxForm({
+	form: 'surveyForm'
+})(SurveyNew);
