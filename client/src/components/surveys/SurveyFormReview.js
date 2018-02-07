@@ -5,10 +5,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 //Imports the different fields (e.g name, title, body, emails) into our form - we seperated this out because we also want to access this on our form review page
 import formFields from './formFields';
+//Teaches unaware components about react-router - "withRouer" is a helper function provided by React Router DOM to teach components in our application about react-router and how to use it (used when redirecting between front and back end)
+import { withRouter } from 'react-router-dom';
 import * as actions from '../../actions';
 
-//Returns survey field values on screen - "({ onCancel })" - takes the prop from "SurveyForm.js", "onClick={onCancel}" - executes the function onCancel when the user clicks the button, "SurveyFormReview" - this name only needs to line up with the "export default" statement at the bottom, doesnt affect the rest of our app, "{ , formValues}" - pulls in the output of the "mapStateToProps" function which returns values from the Redux store to be displayed on screen for review, ", submitSurvey }" - our form recieves the action creator as a prop (passed in from connect)
-const SurveyFormReview = ({ onCancel, formValues, submitSurvey }) => {
+//Returns survey field values on screen - "({ onCancel })" - takes the prop from "SurveyForm.js", "onClick={onCancel}" - executes the function onCancel when the user clicks the button, "SurveyFormReview" - this name only needs to line up with the "export default" statement at the bottom, doesnt affect the rest of our app, "{ , formValues}" - pulls in the output of the "mapStateToProps" function which returns values from the Redux store to be displayed on screen for review, ", submitSurvey " - our form recieves the action creator as a prop (passed in from connect), ", "history }" - includes the history object (passed in when we export the component) which will be passed to the action creator on our submit button ("submitSurvey")
+const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history }) => {
 	//Iterate over the fields and for each field execute a function that returns html, this is then placed into a new array called "reviewFields", "({name, label})" - we are only extracting the name and label properties
 	const reviewFields = _.map(formFields, ({ name, label }) => {
 		//Returns html for each of our survey fields - "{formvalues[field.name]}" remember "formValues" is the new array and we want to access only the name for EACH entry, "<div key={name}>" when we produce a list of elements React wants us to have a unique key, hence why we are using the individual "name" as a key
@@ -32,7 +34,7 @@ const SurveyFormReview = ({ onCancel, formValues, submitSurvey }) => {
 				Back
 			</button>
 			<button
-				onClick={() => submitSurvey(formValues)}
+				onClick={() => submitSurvey(formValues, history)}
 				className="green btn-flat right white-text"
 			>
 				Send Survey
@@ -47,5 +49,5 @@ function mapStateToProps(state) {
 	return { formValues: state.form.surveyForm.values };
 }
 
-//Wire up connect helper to our component - "mapStateToProps" passes in the result of this function, ", actions" passes in our action creators imported from above
-export default connect(mapStateToProps, actions)(SurveyFormReview);
+//Wire up connect helper to our component - "mapStateToProps" passes in the result of this function, ", actions" passes in our action creators imported from above, "(withRouter(SurveyFormReview)" - we wrap the component we want to export with "withRouter", this will pass the "history" object to the "SurveyFormReview" component under props, we then pass this to our action creator
+export default connect(mapStateToProps, actions)(withRouter(SurveyFormReview));
