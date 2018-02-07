@@ -8,6 +8,7 @@ import { reduxForm, Field } from 'redux-form';
 import { Link } from 'react-router-dom';
 //Imports the SurveyField component
 import SurveyField from './SurveyField';
+import validateEmails from '../../utils/validateEmails';
 
 //Array of objects containing the fields labels and names that will be passed into SurveyField
 const FIELDS = [
@@ -52,7 +53,29 @@ class SurveyForm extends Component {
 	}
 }
 
+//Field validation function - "values" = an object that contains the name of each field and the value (get title: my title, see "const FIELDS=[]")
+function validate(values) {
+	//Defines errors object - If the errors object is empty when returned it means there are no errors
+	const errors = {};
+
+	//Checks for invalid emails - Passes our emails into our "validateEmails" function, if there are any invalid emails it will reutrn a string stating the invalid emails, otherwise we will return "undefined", || '' - "validateEmails" executes when the page loads which causes an error, to fix this we use an OR statement which will pass an empty string to the function if no emails have been typed yet
+	errors.emails = validateEmails(values.emails || '');
+
+	//Iterates over each field - Uses lodash ("_.") to iterate over the FIELDS object and execute a function for each element (works similarly to ".map")
+	_.each(FIELDS, ({ name }) => {
+		//If there is no value in the field - To reference "values" -> "name" at runtime so we need to use [] (we dont use "values.name")
+		if (!values[name]) {
+			//Return an error message - this is a generic message but can be customised (see 154)
+			errors[name] = 'You must provide a value.';
+		}
+	});
+
+	//If applicable return errors
+	return errors;
+}
+
 //Unlike "connect" our redux form takes only 1 argument called "form:"
 export default reduxForm({
+	validate,
 	form: 'surveyForm'
 })(SurveyForm);
