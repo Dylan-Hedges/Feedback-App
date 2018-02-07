@@ -10,10 +10,14 @@ class SurveyNew extends Component {
 	renderContent() {
 		//If showFormReview is equal to true
 		if (this.state.showFormReview === true) {
-			//Return the SurveyFormReview component and update - onSurveySubmit={() =>
-			return <SurveyFormReview />;
+			//Return the SurveyFormReview component - onCancel={} (a prop, needs wiring to a button) when the user submits the form we change the state of "SurveyNew" ("showFormReview") to be false so that the survey form is displayed and the user can make changes
+			return (
+				<SurveyFormReview
+					onCancel={() => this.setState({ showFormReview: false })}
+				/>
+			);
 		}
-		//Else return the survey form to be filled out -  onSurveySubmit={} when the user submits the from we change the state of "SurveyNew" ("showFormReview") to be true so that the review form is displayed
+		//Else return the survey form to be filled out -  onSurveySubmit={} when the user submits the form we change the state of "SurveyNew" ("showFormReview") to be true so that the review form is displayed
 		return (
 			<SurveyForm
 				onSurveySubmit={() => this.setState({ showFormReview: true })}
