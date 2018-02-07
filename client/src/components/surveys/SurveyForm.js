@@ -53,7 +53,7 @@ function validate(values) {
 	//Defines errors object - If the errors object is empty when returned it means there are no errors
 	const errors = {};
 	//Checks for invalid emails - Passes our emails into our "validateEmails" function, if there are any invalid emails it will reutrn a string stating the invalid emails, otherwise we will return "undefined", || '' - "validateEmails" executes when the page loads which causes an error, to fix this we use an OR statement which will pass an empty string to the function if no emails have been typed yet
-	errors.emails = validateEmails(values.emails || '');
+	errors.recipients = validateEmails(values.recipients || '');
 	//Iterates over each field - Uses lodash ("_.") to iterate over the FIELDS object and execute a function for each element (works similarly to ".map")
 	_.each(formFields, ({ name }) => {
 		//If there is no value in the field - To reference "values" -> "name" at runtime so we need to use [] (we dont use "values.name")
