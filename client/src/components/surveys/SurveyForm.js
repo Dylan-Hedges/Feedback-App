@@ -36,9 +36,10 @@ class SurveyForm extends Component {
 	}
 
 	render() {
+		// "onSubmit={}" - when the user submits the form we execute the "onSurveySubmit" function, which changes the state of our show review form (located in "SurveyNew.js"), we dont include "()" for "onSurveySubmit" otherwise the JS interpreter will execute the function as soon as it has been read, when we only want it called after the user has submitted the form
 		return (
 			<div>
-				<form onSubmit={this.props.handleSubmit(values => console.log(values))}>
+				<form onSubmit={this.props.handleSubmit(this.props.onSurveySubmit)}>
 					{this.renderFields()}
 					<Link to="/surveys" className="red btn-flat white-text">
 						Cancel
@@ -57,10 +58,8 @@ class SurveyForm extends Component {
 function validate(values) {
 	//Defines errors object - If the errors object is empty when returned it means there are no errors
 	const errors = {};
-
 	//Checks for invalid emails - Passes our emails into our "validateEmails" function, if there are any invalid emails it will reutrn a string stating the invalid emails, otherwise we will return "undefined", || '' - "validateEmails" executes when the page loads which causes an error, to fix this we use an OR statement which will pass an empty string to the function if no emails have been typed yet
 	errors.emails = validateEmails(values.emails || '');
-
 	//Iterates over each field - Uses lodash ("_.") to iterate over the FIELDS object and execute a function for each element (works similarly to ".map")
 	_.each(FIELDS, ({ name }) => {
 		//If there is no value in the field - To reference "values" -> "name" at runtime so we need to use [] (we dont use "values.name")
