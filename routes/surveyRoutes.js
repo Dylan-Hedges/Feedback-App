@@ -14,6 +14,11 @@ module.exports = app => {
 		res.send('Thanks for voting!');
 	});
 
+	app.post('/api/surveys/webhooks', (req, res) => {
+		console.log(req.body);
+		res.send({});
+	});
+
 	//If a user tries to make a new survey (i.e for post requests that come into '/api/surveys') check the user is logged in (execute requireLogin middleware), check the user has enough credits (execute requireCredits middleware), execute callback/create survey, "req" = object that represents the incoming request (contains title, subject, body, recipients(array, "," seperated string of addresses)), creates a new instance of the survey using the model, "async" see "await"
 	app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
 		const { title, subject, body, recipients } = req.body;
