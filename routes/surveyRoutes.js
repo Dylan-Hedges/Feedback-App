@@ -1,3 +1,9 @@
+//Used for iteration (contains _.map)
+const _ = require('lodash');
+//Used to extract parts of a URL
+const Path = require('path-parser');
+//A helper used to parse URLs - 'url' is a default/integrated module in Node.js, URL is a specific helper inside of 'url'
+const { URL } = require('url');
 const mongoose = require('mongoose');
 //Middleware that checks the user is logged in - we dont want users that are not logged in to be able to make surveys
 const requireLogin = require('../middlewares/requireLogin');
@@ -15,7 +21,26 @@ module.exports = app => {
 	});
 
 	app.post('/api/surveys/webhooks', (req, res) => {
-		console.log(req.body);
+		//Iterates over the list/array send by SendGrid - "req.body" = the list of events from SendGrid, "({ email, url }) =>{}" for every element in the array (req.body) extract the email and url then execute a function
+		const events = _.map(req.body, ({ email, url }) => {
+			//Extracts the route portion of the URL and save it to a  variable "pathname"
+			const pathname = new URL(url).pathname;
+			//Creates a matcher - Tells path that want to extract the survey id and choice from "pathname",":surveyId" and ":choice" refers to variables
+			const p = new Path('/api/surveys/:surveyId/:choice');
+			//Identifies and returns matches - "p.test()" will return an object containing the successful matches or null (needs to extract both the survey id AND choice), takes the parsed URL (pathname) and runs it agaisnt the matcher("p"), it then returns an object containing the results (in this case "surveyID" and "choice")
+			const match = p.test(pathname);
+			//If a match is found
+			if (match) {
+				//Returns an object containing the users email and the match results (surveyId, users choice)("email" is a destructured version of "email: email" we can do this when the K/V is the same)
+				return { email, surveyId: match.surveyId, choice: match.choice };
+			}
+		});
+		//Removes undefined elements - part of the lodash library. takes an array, goes through all the elements, removes undefined elements (e.g elements we didnt want)
+		const compactEvents = _.compact(events);
+		//Removes duplicate elements - checks using the 'email' AND 'surveyId' properties, if there are any duplicates then it removes them
+		const uniqueEvents = _.uniqBy(compactEvents, 'email', 'surveyId');
+		console.log(uniqueEvents);
+
 		res.send({});
 	});
 
