@@ -15,8 +15,8 @@ const surveyTemplate = require('../services/emailTemplates/surveyTemplate.js');
 const Survey = mongoose.model('surveys');
 
 module.exports = app => {
-	//Route user is taken to after responding to survey
-	app.get('/api/surveys/thanks', (req, res) => {
+	//Route user is taken to after responding to survey - we include the ":surveyId" and ":choice" wildcards (variables for change depending on the survey and choice submitted)
+	app.get('/api/surveys/:surveyId/:choice', (req, res) => {
 		res.send('Thanks for voting!');
 	});
 
@@ -24,8 +24,8 @@ module.exports = app => {
 		//Creates a matcher - Tells path that want to extract the survey id and choice from "pathname",":surveyId" and ":choice" refers to variables
 		const p = new Path('/api/surveys/:surveyId/:choice');
 
-		//Executes multiple lodash helpers in order - ".map" over the list/array of all the events in "req.body" ,".map()" -> ".compact()" -> ".uniqBy()" -> ".value()", "req.body" is a list of all the events when the elements in this list are altered it is automatically passed to the next helper in the chain, we do not have to manually pass on the value, "_" is removed from the start of each helper
-		const events = _.chain(req.body)
+		//Executes multiple lodash helpers in order - ".map" over the list/array of all the events in "req.body" ,".map()" -> ".compact()" -> ".uniqBy()" -> ".value()", "req.body" is a list of all the events when the elements in this list are altered it is automatically passed to the next helper in the chain, we do not have to manually pass on the value, "_" is removed from the start of each helper, "const = events" - we can remove this variable because it is no logner reference with our chain statement, instead we directly pass in "req.body"
+		_.chain(req.body)
 			//Iterates over the list/array send by SendGrid - "req.body" = the list of events from SendGrid, "({ email, url }) =>{}" for every element in the array (req.body) extract the email and url then execute a function
 			.map(({ email, url }) => {
 				//Identifies and returns matches - "p.test()" will return an object containing the successful matches or null (needs to extract both the survey id AND choice), takes the parsed URL and runs it agaisnt the matcher("p"), it then returns an object containing the results (in this case "surveyID" and "choice"), "new URL(url).pathname" - Extracts the route portion of the URL
@@ -40,10 +40,30 @@ module.exports = app => {
 			.compact()
 			//Removes duplicate elements - lodash helper, checks using the 'email' AND 'surveyId' properties, if there are any duplicates then it removes them
 			.uniqBy('email', 'surveyId')
+			//Updates our MongoDB - ".each()" iterates over event event/element in the array and executes our MongoDB query, "{ surveyId, email, choice }" passes in the survey id, user email and there choice (yes/no), we dont need "async/await" because we are not sending any responses back to SendGrid, once we recieve the data from SendGrid we just process it, we dont send anything back
+			.each(({ surveyId, email, choice }) => {
+				//Find and update one record in a survey  - look at the 'Survey' collection and find and update exactly one record, (this is a query we execute on our MongoDB, no exchange between the Express server <-> MongoDB, we are just sending an instruction to MongoDB to make an update)
+				Survey.updateOne(
+					{
+						//Find the survey we care about - finds a survey with this given id, "_id" when passing a query to MongoDB we must include the "_" in front of "id"
+						_id: surveyId,
+						recipients: {
+							//Find the recipient we care about (in the subdocument collection) - finds the recipient with a specific email and has not responded to the survey
+							$elemMatch: { email: email, responded: false }
+						}
+					},
+					{
+						//Increment 'yes' or 'no' by +1 - Change "[choice]" to 'yes' or 'no' depending on the response and increment it by +1 ("$inc"),  mongo operator (lets us put intelligent logic inside of a query that we issue to our MongoDB)
+						$inc: { [choice]: 1 },
+						//Update the recipient's responded property to be true - user has now responded to our survey, inside of the survey that was found, look inside 'recipients' -> 'responded' -> set to true, '$' references the recipient we care about ('$' references the result of the '$eleMatch' query which returned a specific recipient/specific index value in the array)
+						$set: { 'recipients.$.responded': true },
+						lastResponded: new Date()
+					}
+					//Executes the query to MongoDB
+				).exec();
+			})
 			//Returns the values - after executing all helpers return the final values as a new array, this is then saved to the "events" variable
 			.value();
-
-		console.log(events);
 
 		res.send({});
 	});
