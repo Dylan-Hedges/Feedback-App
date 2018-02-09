@@ -15,6 +15,15 @@ const surveyTemplate = require('../services/emailTemplates/surveyTemplate.js');
 const Survey = mongoose.model('surveys');
 
 module.exports = app => {
+	//Displays surveys created by the user - because this is an asynchronous query we use the async await syntax
+	app.get('/api/surveys', requireLogin, async (req, res) => {
+		//Search for surveys created by the logged in user - ".find({})" - returns a mongoose query object, ".select()" - we can then chain on additonal aspects to the query (for ".select" we have several options to select things we do/don't want to search for, e.g we can use a string 'a' = seach for OR '-a' = dont search for, we can also use an object '{a:1}' = search for OR '{a:0}' = dont search for ), ".select({ recipients: false}" - do not give us the list of recipients (do not include the recipients property when we pull the list of surveys out of our DB)
+		const surveys = await Survey.find({ _user: req.user.id }).select({
+			recipients: false
+		});
+		res.send(surveys);
+	});
+
 	//Route user is taken to after responding to survey - we include the ":surveyId" and ":choice" wildcards (variables for change depending on the survey and choice submitted)
 	app.get('/api/surveys/:surveyId/:choice', (req, res) => {
 		res.send('Thanks for voting!');
