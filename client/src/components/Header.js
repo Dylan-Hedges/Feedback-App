@@ -15,12 +15,19 @@ class Header extends Component {
 				return;
 			//User is not logged in
 			case false:
-				return (
+				return [
 					//Displays log in button that links to our Google OAuth flow
-					<li>
-						<a href="/auth/google">Login With Google</a>
+					<li key="1">
+						<i className="material-icons" style={{ fontSize: '30px' }}>
+							group
+						</i>
+					</li>,
+					<li key="2">
+						<a href="/auth/google">
+							<p style={{ margin: '0px 10px 20px 0px' }}>Login</p>
+						</a>
 					</li>
-				);
+				];
 			//User is logged in (all other possibilites) - <a href="/api/logout"> redirect the user to the logout route on our backend Express API (this route then redirects them back to the default page)
 			default:
 				return [
@@ -37,17 +44,33 @@ class Header extends Component {
 				];
 		}
 	}
+
 	//Link to={} - Navigate to the react route inside of the {}, this.props.user ? '/surveys' : '/' - if a user exists (is logged in/true) go to the surveys page, if a user does not exist (logged out/false) go to the root page
 	render() {
 		return (
 			<div>
 				<nav>
-					<div className="nav-wrapper">
+					<div className="nav-wrapper blue accent-2">
 						<Link
 							to={this.props.auth ? '/surveys' : '/'}
 							className="left brand-logo"
 						>
-							Emaily
+							<i
+								class="material-icons"
+								style={{ fontSize: '45px', margin: '0 0 0 10px' }}
+							>
+								home
+							</i>
+							<h5
+								style={{
+									fontSize: '25px',
+									color: 'white',
+									float: 'left',
+									padding: '10px'
+								}}
+							>
+								Home
+							</h5>
 						</Link>
 						<ul className="right">{this.renderContent()}</ul>
 					</div>
